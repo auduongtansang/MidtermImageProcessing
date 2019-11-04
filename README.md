@@ -43,42 +43,42 @@ Biến đổi màu, biến đổi hình học, làm trơn và phát hiện biên
   ```bash
   MidtermImageProcessing.exe --contrast test.jpg 1.5
   ```
-**8. Tính histogram:**
+**7. Tính histogram:**
   - task = hist
   ```bash
   MidtermImageProcessing.exe --hist test.jpg
   ```
-**9. Vẽ histogram:**
+**8. Vẽ histogram:**
   - task = drawhist
   ```bash
   MidtermImageProcessing.exe --drawhist test.jpg
   ```
-**10. Cân bằng histogram:**
+**9. Cân bằng histogram:**
   - task = equalhist
   ```bash
   MidtermImageProcessing.exe --equalhist test.jpg
   ```
-**11. So sánh 2 ảnh:**
+**10. So sánh 2 ảnh:**
   - task = compare
   - taskArgument1: đường dẫn đến file ảnh cần so sánh
   ```bash
   MidtermImageProcessing.exe --compare test.jpg anothertest.jpg
   ```
-**12. Lọc nhiễu trung bình:**
+**11. Lọc nhiễu trung bình:**
   - task = mean
   - taskArgument1 = chiều rộng kernel
   - taskArgument2 = chiều cao kernel
   ```bash
   MidtermImageProcessing.exe --mean test.jpg 3 3
   ```
-**13. Lọc nhiễu trung vị:**
+**12. Lọc nhiễu trung vị:**
   - task = median
   - taskArgument1 = chiều rộng kernel
   - taskArgument2 = chiều cao kernel
   ```bash
   MidtermImageProcessing.exe --median test.jpg 3 3
   ```
-**14. Lọc nhiễu Gaussian:**
+**13. Lọc nhiễu Gaussian:**
   - task = gauss
   - taskArgument1 = chiều rộng kernel
   - taskArgument2 = chiều cao kernel
@@ -86,20 +86,20 @@ Biến đổi màu, biến đổi hình học, làm trơn và phát hiện biên
   MidtermImageProcessing.exe --gauss test.jpg 3 3
   ```
   
-**15. Lọc biên cạnh Sobel:**
+**14. Lọc biên cạnh Sobel:**
   - task = sobel
   - taskArgument1 = taskArgument2 = NULL
   ```bash
   MidtermImageProcessing.exe --sobel test.jpg
   ```
   
-**16. Lọc biên cạnh Prewitt:**
+**15. Lọc biên cạnh Prewitt:**
   - task = prewitt
   - taskArgument1 = taskArgument2 = NULL
   ```bash
   MidtermImageProcessing.exe --prewitt test.jpg
   ```
-**17. Lọc biên cạnh Laplacian:**
+**16. Lọc biên cạnh Laplacian:**
   - task = laplace
   - taskArgument1 = taskArgument2 = NULL
   ```bash
