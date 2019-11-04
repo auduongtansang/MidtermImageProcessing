@@ -1,0 +1,6 @@
+.vs/
+x64/
+*.jpg
+*.png
+*.dll
+ImageFiltering/x64/
