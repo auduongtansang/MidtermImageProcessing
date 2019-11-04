@@ -37,33 +37,45 @@ int EdgeDetector::DetectEdge(const Mat& sourceImage, Mat& destinationImage, int 
 		convolution.DoConvolution(sourceImage, laplacian);
 
 		/*
-		Tìm điểm ảnh zero-crossing
-		Duyệt tất cả điểm ảnh
-		Với mỗi điểm ảnh, lần lượt bắt cặp với 3 lân cận của nó: phải, dưới, phải-dưới
-			Nếu có bất kì cặp nào thỏa: giá trị của chúng trái dấu và chênh lệnh giá trị của chúng lớn hơn hay bằng threshold
-			Thì điểm đang xét thuộc biên cạnh
+		Tìm điểm ảnh zero-crossing (điểm đảo dấu)
+			{+, 0, -}, {-, 0, +}, {+, -}, {-, +}
+		Duyệt qua tất cả điểm ảnh:
+			Nếu điểm đang xét bằng 0, kiểm tra từng cặp điểm ảnh theo 4 phương: dọc, ngang, chéo xuôi, chéo ngược
+			Ngược lại, chỉ cần kiểm tra điểm bên cạnh theo 3 hướng: dưới, phải, phải-dưới
 		Thao tác duyệt tương tự hàm nhân chập (đọc comment hàm nhân chập để hiểu cách duyệt)
 		*/
 		destinationImage = Mat(sourceImage.rows, sourceImage.cols, CV_8UC1, Scalar(0));
-		int rowStep = destinationImage.cols;
+		int rowStep = sourceImage.cols;
 
 		short* pRowLap = (short*)(laplacian.data);
 		uchar* pRowDst = destinationImage.data;
 		float threshold = 150;
 
-		for (int i = 0; i < sourceImage.rows - 1; i++, pRowLap += rowStep, pRowDst += rowStep)
+		for (int i = 1; i < sourceImage.rows - 1; i++, pRowLap += rowStep, pRowDst += rowStep)
 		{
 			short* pDataLap = pRowLap;
 			uchar* pDataDst = pRowDst;
-			for (int j = 0; j < sourceImage.cols - 1; j++, pDataLap++, pDataDst++)
-			{
-				if (*pDataLap * pDataLap[1] < 0 && abs(*pDataLap - pDataLap[1]) >= threshold)
-					*pDataDst = 255;
-				if (*pDataLap * pDataLap[rowStep] < 0 && abs(*pDataLap - pDataLap[rowStep]) >= threshold)
-					*pDataDst = 255;
-				if (*pDataLap * pDataLap[rowStep + 1] < 0 && abs(*pDataLap - pDataLap[rowStep + 1]) >= threshold)
-					*pDataDst = 255;
-			}
+			for (int j = 1; j < sourceImage.cols - 1; j++, pDataLap++, pDataDst++)
+				if (*pDataLap == 0)
+				{
+					if (pDataLap[rowStep] * pDataLap[-rowStep] < 0 && abs(pDataLap[rowStep] - pDataLap[-rowStep]) >= threshold)
+						*pDataDst = 255;
+					if (pDataLap[1] * pDataLap[-1] < 0 && abs(pDataLap[1] - pDataLap[-1]) >= threshold)
+						*pDataDst = 255;
+					if (pDataLap[rowStep + 1] * pDataLap[-rowStep - 1] < 0 && abs(pDataLap[rowStep + 1] - pDataLap[-rowStep - 1]) >= threshold)
+						*pDataDst = 255;
+					if (pDataLap[rowStep - 1] * pDataLap[-rowStep + 1] < 0 && abs(pDataLap[rowStep - 1] - pDataLap[-rowStep + 1]) >= threshold)
+						*pDataDst = 255;
+				}
+				else
+				{
+					if (*pDataLap * pDataLap[rowStep] < 0 && abs(*pDataLap - pDataLap[rowStep]) >= threshold)
+						*pDataDst = 255;
+					if (*pDataLap * pDataLap[rowStep + 1] < 0 && abs(*pDataLap - pDataLap[rowStep + 1]) >= threshold)
+						*pDataDst = 255;
+					if (*pDataLap * pDataLap[1] < 0 && abs(*pDataLap - pDataLap[1]) >= threshold)
+						*pDataDst = 255;
+				}
 		}
 
 		return 0;
