@@ -10,6 +10,10 @@ EdgeDetector::~EdgeDetector()
 
 int EdgeDetector::DetectEdge(const Mat& sourceImage, Mat& destinationImage, int kernelWidth, int kernelHeight, int method)
 {
+	//Nếu ảnh input rỗng => không làm gì hết
+	if (sourceImage.empty())
+		return 1;
+
 	/*
 	Nếu là method 3, chỉ cần 1 kernel:
 		|1  1 1|
@@ -41,17 +45,17 @@ int EdgeDetector::DetectEdge(const Mat& sourceImage, Mat& destinationImage, int 
 		Thao tác duyệt tương tự hàm nhân chập (đọc comment hàm nhân chập để hiểu cách duyệt)
 		*/
 		destinationImage = Mat(sourceImage.rows, sourceImage.cols, CV_8UC1, Scalar(0));
-		int rowStep = (int)(destinationImage.step[0]);
+		int rowStep = destinationImage.cols;
 
-		short* pRowLap = (short*)laplacian.data;
+		short* pRowLap = (short*)(laplacian.data);
 		uchar* pRowDst = destinationImage.data;
 		float threshold = 150;
 
-		for (int i = 0; i < destinationImage.rows - 1; i++, pRowLap += rowStep, pRowDst += rowStep)
+		for (int i = 0; i < sourceImage.rows - 1; i++, pRowLap += rowStep, pRowDst += rowStep)
 		{
 			short* pDataLap = pRowLap;
 			uchar* pDataDst = pRowDst;
-			for (int j = 0; j < destinationImage.cols - 1; j++, pDataLap++, pDataDst++)
+			for (int j = 0; j < sourceImage.cols - 1; j++, pDataLap++, pDataDst++)
 			{
 				if (*pDataLap * pDataLap[1] < 0 && abs(*pDataLap - pDataLap[1]) >= threshold)
 					*pDataDst = 255;
@@ -76,9 +80,9 @@ int EdgeDetector::DetectEdge(const Mat& sourceImage, Mat& destinationImage, int 
 	if (method == 1)
 	{
 		/*
-					1	|1  0  -1|
-			Kx =	- *	|2  0  -2|
-					4	|1  0  -1|
+			|1  0  -1|   1
+			|2  0  -2| * -  =  Kx
+			|1  0  -1|   4
 		*/
 		kernelX.push_back(1); kernelX.push_back(0); kernelX.push_back(-1);
 
@@ -87,9 +91,9 @@ int EdgeDetector::DetectEdge(const Mat& sourceImage, Mat& destinationImage, int 
 		kernelX.push_back(1); kernelX.push_back(0); kernelX.push_back(-1);
 
 		/*
-					1	|-1  -2  -1|
-			Ky =	- *	| 0   0   0|
-					4	| 1   2   1|
+			|-1  -2  -1|   1
+			| 0   0   0| * -  =  Ky
+			| 1   2   1|   4
 		*/
 
 		kernelY.push_back(-1); kernelY.push_back(-2); kernelY.push_back(-1);
@@ -103,9 +107,9 @@ int EdgeDetector::DetectEdge(const Mat& sourceImage, Mat& destinationImage, int 
 	else if (method == 2)
 	{
 		/*
-					1	|1  0  -1|
-			Kx =	- *	|1  0  -1|
-					3	|1  0  -1|
+			|1  0  -1|   1
+			|1  0  -1| * -  =  Kx
+			|1  0  -1|   3
 		*/
 		kernelX.push_back(1); kernelX.push_back(0); kernelX.push_back(-1);
 
@@ -114,9 +118,9 @@ int EdgeDetector::DetectEdge(const Mat& sourceImage, Mat& destinationImage, int 
 		kernelX.push_back(1); kernelX.push_back(0); kernelX.push_back(-1);
 
 		/*
-					1	|-1  -1  -1|
-			Ky =	- *	| 0   0   0|
-					3	| 1   1   1|
+			|-1  -1  -1|   1
+			| 0   0   0| * -  =  Ky
+			| 1   1   1|   3
 		*/
 
 		kernelY.push_back(-1); kernelY.push_back(-1); kernelY.push_back(-1);
@@ -142,19 +146,19 @@ int EdgeDetector::DetectEdge(const Mat& sourceImage, Mat& destinationImage, int 
 	Thao tác duyệt tương tự hàm nhân chập (đọc comment hàm nhân chập để hiểu cách duyệt)
 	*/
 	destinationImage = Mat(sourceImage.rows, sourceImage.cols, CV_8UC1, Scalar(0));
-	int rowStep = (int)(destinationImage.step[0]);
+	int rowStep = sourceImage.cols;
 
-	short* pRowX = (short*)dx.data;
-	short* pRowY = (short*)dy.data;
+	short* pRowX = (short*)(dx.data);
+	short* pRowY = (short*)(dy.data);
 	uchar* pRow = destinationImage.data;
 	int threshold = 1024;
 
-	for (int i = 0; i < destinationImage.rows; i++, pRowX += rowStep, pRowY += rowStep, pRow += rowStep)
+	for (int i = 0; i < sourceImage.rows; i++, pRowX += rowStep, pRowY += rowStep, pRow += rowStep)
 	{
 		short* pDataX = pRowX;
 		short* pDataY = pRowY;
 		uchar* pData = pRow;
-		for (int j = 0; j < destinationImage.cols; j++, pDataX++, pDataY++, pData++)
+		for (int j = 0; j < sourceImage.cols; j++, pDataX++, pDataY++, pData++)
 			if (*pDataX * *pDataX + *pDataY * *pDataY >= threshold)
 				*pData = 255;
 	}

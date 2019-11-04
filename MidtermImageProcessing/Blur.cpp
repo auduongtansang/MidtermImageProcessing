@@ -10,6 +10,10 @@ Blur::~Blur()
 
 int Blur::BlurImage(const Mat& sourceImage, Mat& destinationImage, int kernelWidth, int kernelHeight, int method)
 {
+	//Nếu ảnh input rỗng => không làm gì hết
+	if (sourceImage.empty())
+		return 1;
+
 	/*Nếu là method 1, lọc phi tuyến, không dùng được nhân chập
 	Duyệt tất cả lân cận của điểm ảnh (i, j)
 	Sắp xếp lại và lấy giá trị ở giữa gán cho điểm ảnh (i, j)
@@ -17,11 +21,8 @@ int Blur::BlurImage(const Mat& sourceImage, Mat& destinationImage, int kernelWid
 	*/
 	if (method == 1)
 	{
-		if (sourceImage.empty())
-			return -1;
-
 		destinationImage = Mat(sourceImage.rows, sourceImage.cols, CV_8UC1, Scalar(0));
-		int rowStep = (int)(sourceImage.step[0]);
+		int rowStep = sourceImage.cols;
 		
 		int halfHeigth = kernelHeight / 2;
 		int halfWidth = kernelWidth / 2;
@@ -104,16 +105,16 @@ int Blur::BlurImage(const Mat& sourceImage, Mat& destinationImage, int kernelWid
 	Thao tác duyệt tương tự hàm nhân chập (đọc comment hàm nhân chập để hiểu cách duyệt)
 	*/
 	destinationImage = Mat(sourceImage.rows, sourceImage.cols, CV_8UC1, Scalar(0));
-	int rowStep = (int)(sourceImage.step[0]);
+	int rowStep = sourceImage.cols;
 	
-	short* pRowBlr = (short*)blured.data;
+	short* pRowBlr = (short*)(blured.data);
 	uchar* pRow = destinationImage.data;
 
-	for (int i = 0; i < destinationImage.rows; i++, pRowBlr += rowStep, pRow += rowStep)
+	for (int i = 0; i < sourceImage.rows; i++, pRowBlr += rowStep, pRow += rowStep)
 	{
 		short* pDataBlr = pRowBlr;
 		uchar* pData = pRow;
-		for (int j = 0; j < destinationImage.cols; j++, pDataBlr++, pData++)
+		for (int j = 0; j < sourceImage.cols; j++, pDataBlr++, pData++)
 			*pData = (uchar)(*pDataBlr);
 	}
 

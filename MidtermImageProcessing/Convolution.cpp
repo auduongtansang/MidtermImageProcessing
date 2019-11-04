@@ -39,11 +39,11 @@ int Convolution::DoConvolution(const Mat& sourceImage, Mat& destinationImage)
 {
 	//Nếu ảnh input rỗng => không làm gì hết
 	if (sourceImage.empty())
-		return -1;
+		return 1;
 
 	//Nếu kernel rỗng => không làm gì hết
 	if (_kernelHeight <= 0 || _kernelWidth <= 0)
-		return -1;
+		return 1;
 
 	/*
 	Tạo ảnh output (ảnh kết quả của phép tích chập là một ảnh vô nghĩa, sẽ xử lý sau)
@@ -56,13 +56,13 @@ int Convolution::DoConvolution(const Mat& sourceImage, Mat& destinationImage)
 	Bỏ qua một vài dòng và cột ở rìa của ảnh để kernel không bị thừa ra ngoài
 	Số dòng và cột bị bỏ qua là một nửa các kích thước (bán kính) của kernel
 	*/
-	int rowStep = (int)(sourceImage.step[0]);
+	int rowStep = sourceImage.cols;
 
 	int halfHeight = _kernelHeight / 2;
 	int halfWidth = _kernelWidth / 2;
 
 	uchar* pRowSrc = sourceImage.data + rowStep * halfHeight + halfWidth;
-	short* pRowDst = (short*)destinationImage.data + rowStep * halfHeight + halfWidth;
+	short* pRowDst = (short*)(destinationImage.data) + rowStep * halfHeight + halfWidth;
 
 	/*
 	Duyệt qua từng điểm ảnh (i, j) và nhân chập với kernel
