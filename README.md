@@ -1,5 +1,5 @@
-# ImageFiltering
-Làm trơn ảnh và phát hiện biên cạnh trên miền không gian
+# MidtermImageProcessing
+Biến đổi màu, biến đổi hình học, làm trơn và phát hiện biên cạnh trên miền không gian
 
 ## Cài đặt
   - Tải OpenCV 4.1.1 và giải nén vào C:/OpenCV/
@@ -11,46 +11,99 @@ Làm trơn ảnh và phát hiện biên cạnh trên miền không gian
   ```bash
   path/to/executable/file/<exeFile>.exe --taskName path/to/input/file/<imageFile>.jpg <taskArgument1> <taskArgument2>
   ```
-**1. Lọc nhiễu trung bình:**
+**1. Chuyển RGB sang GRAY:**
+  - task = rgb2gray
+  ```bash
+  MidtermImageProcessing.exe --rgb2gray test.jpg
+  ```
+**2. Chuyển GRAY sang RGB:**
+  - task = gray2rgb
+  ```bash
+  MidtermImageProcessing.exe --gray2rgb test.jpg
+  ```
+**3. Chuyển RGB sang HSV:**
+  - task = rgb2hsv
+  ```bash
+  MidtermImageProcessing.exe --rgb2hsv test.jpg
+  ```
+**4. Chuyển HSV sang RGB:**
+  - task = hsv2rgb
+  ```bash
+  MidtermImageProcessing.exe --hsv2rgb test.jpg
+  ```
+**5. Thay đổi độ sáng:**
+  - task = bright
+  - taskArgument1 = lượng thay đổi
+  ```bash
+  MidtermImageProcessing.exe --bright test.jpg 100
+  ```
+**6. Thay đổi độ tương phản:**
+  - task = contrast
+  - taskArgument1 = lượng thay đổi
+  ```bash
+  MidtermImageProcessing.exe --contrast test.jpg 1.5
+  ```
+**8. Tính histogram:**
+  - task = hist
+  ```bash
+  MidtermImageProcessing.exe --hist test.jpg
+  ```
+**9. Vẽ histogram:**
+  - task = drawhist
+  ```bash
+  MidtermImageProcessing.exe --drawhist test.jpg
+  ```
+**10. Cân bằng histogram:**
+  - task = equalhist
+  ```bash
+  MidtermImageProcessing.exe --equalhist test.jpg
+  ```
+**11. So sánh 2 ảnh:**
+  - task = compare
+  - taskArgument1: đường dẫn đến file ảnh cần so sánh
+  ```bash
+  MidtermImageProcessing.exe --compare test.jpg anothertest.jpg
+  ```
+**12. Lọc nhiễu trung bình:**
   - task = mean
   - taskArgument1 = chiều rộng kernel
   - taskArgument2 = chiều cao kernel
   ```bash
-  ImageFiltering.exe --mean test.jpg 3 3
+  MidtermImageProcessing.exe --mean test.jpg 3 3
   ```
-**2. Lọc nhiễu trung vị:**
+**13. Lọc nhiễu trung vị:**
   - task = median
   - taskArgument1 = chiều rộng kernel
   - taskArgument2 = chiều cao kernel
   ```bash
-  ImageFiltering.exe --median test.jpg 3 3
+  MidtermImageProcessing.exe --median test.jpg 3 3
   ```
-**3. Lọc nhiễu Gaussian:**
+**14. Lọc nhiễu Gaussian:**
   - task = gauss
   - taskArgument1 = chiều rộng kernel
   - taskArgument2 = chiều cao kernel
   ```bash
-  ImageFiltering.exe --gauss test.jpg 3 3
+  MidtermImageProcessing.exe --gauss test.jpg 3 3
   ```
   
-**4. Lọc biên cạnh Sobel:**
+**15. Lọc biên cạnh Sobel:**
   - task = sobel
   - taskArgument1 = taskArgument2 = NULL
   ```bash
-  ImageFiltering.exe --sobel test.jpg
+  MidtermImageProcessing.exe --sobel test.jpg
   ```
   
-**5. Lọc biên cạnh Prewitt:**
+**16. Lọc biên cạnh Prewitt:**
   - task = prewitt
   - taskArgument1 = taskArgument2 = NULL
   ```bash
-  ImageFiltering.exe --prewitt test.jpg
+  MidtermImageProcessing.exe --prewitt test.jpg
   ```
-**6. Lọc biên cạnh Laplacian:**
+**17. Lọc biên cạnh Laplacian:**
   - task = laplace
   - taskArgument1 = taskArgument2 = NULL
   ```bash
-  ImageFiltering.exe --laplace test.jpg
+  MidtermImageProcessing.exe --laplace test.jpg
   ```
   
 ## Giấy phép
