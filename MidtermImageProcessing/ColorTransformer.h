@@ -252,9 +252,11 @@ public:
 		if (histMatrix.empty())
 			return 0;
 
+		hist_normalization(histMatrix);
+
 		if (histMatrix.rows == 1) //Lược đồ của ảnh xám
 		{
-			Mat des_Hist_1 = Mat(hist_normalization(histMatrix), 256, CV_8UC1, Scalar(0));
+			Mat des_Hist_1 = Mat(300, 256, CV_8UC1, Scalar(0));
 			for (int j = 0; j < des_Hist_1.cols; j++)
 				line(des_Hist_1, Point(j, des_Hist_1.rows - 1 - histMatrix.at<unsigned short>(0, j)), Point(j, des_Hist_1.rows - 1), Scalar(255), 2);
 
@@ -263,7 +265,7 @@ public:
 		}
 		if (histMatrix.rows == 3)
 		{
-			Mat des_Hist_3 = Mat(hist_normalization(histMatrix), 256 * 3, CV_8UC3, Scalar(0));
+			Mat des_Hist_3 = Mat(300, 256 * 3, CV_8UC3, Scalar(0));
 			for (int i = 0; i < histMatrix.rows; i++)
 				for (int j = 0; j < histMatrix.cols; j++)
 				{
