@@ -47,8 +47,8 @@ int EdgeDetector::DetectEdge(const Mat& sourceImage, Mat& destinationImage, int 
 		destinationImage = Mat(sourceImage.rows, sourceImage.cols, CV_8UC1, Scalar(0));
 		int rowStep = sourceImage.cols;
 
-		short* pRowLap = (short*)(laplacian.data);
-		uchar* pRowDst = destinationImage.data;
+		short* pRowLap = (short*)(laplacian.data) + rowStep;
+		uchar* pRowDst = destinationImage.data + rowStep;
 		float threshold = 150;
 
 		for (int i = 1; i < sourceImage.rows - 1; i++, pRowLap += rowStep, pRowDst += rowStep)
