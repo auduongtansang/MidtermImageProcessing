@@ -4,14 +4,26 @@
 #include "EdgeDetector.h"
 #include "Converter.h"
 #include "Blur.h"
+#include "GeometricTransformer.h"
 #include <string>
 #include <iostream>
-
-using namespace cv;
+using namespace cv; 
 using namespace std;
+
+void getInfomation(int n_ARGUMENT, char **ARGUMENTS, 
+	char * &IN_PATH, char * &TASK, char *&INTER_METHOD, vector<string> &OTHER_ARGV);
 
 int main(int argc, char **argv)
 {
+	/*	These following variables is used for loading Image InputPath, Task-to-do, Interpolation methods
+		For more description, please check the Lab01,02,03 instruction
+	*/
+	char * input_path = NULL, * task = NULL, * interpolate = NULL;
+	vector<string> other_argv;
+	
+	/*Parsing Arguments here*/
+	getInfomation(argc, argv, input_path, task, interpolate, other_argv);
+
 	if (argc < 2)
 		return EXIT_FAILURE;
 	if ((strcmp(argv[1], "--bright") == 0 || strcmp(argv[1], "--contrast") == 0) && (argc < 4))
@@ -23,14 +35,32 @@ int main(int argc, char **argv)
 	Đọc ảnh màu RGB
 	Ở những yêu cầu có đầu vào là ảnh xám, hoặc ảnh HSV thì dùng hàm chuyển
 	*/
-	Mat image = imread(argv[2], IMREAD_COLOR);
+	Mat image = imread(input_path, IMREAD_COLOR);
 	Mat destinationImage;
 
 	ColorTransformer colorTransformer;
 	Converter converter;
 	EdgeDetector edgeDetector;
 	Blur blur;
+	PixelInterpolate* type_interpolation;
+	GeometricTransformer* geotransform;
+	/*
+		Detect Interpolation methods to create appropriate Class
+	*/
+	if (interpolate != NULL)
+	{
+		if (strcmp(interpolate, "--bl") == 0)
+			type_interpolation = new BilinearInterpolate;
+		else
+			type_interpolation = new NearestNeighborInterpolate;
+	}
+	else
+		type_interpolation = NULL;
+	/*
+		To do task required
+	*/
 
+	// Các task của Lab01
 	if (strcmp(argv[1], "--contrast") == 0)
 	{
 		imshow("Source (RGB)", image);
@@ -146,6 +176,7 @@ int main(int argc, char **argv)
 		if (converter.Convert(image, destinationImage, 3) == 1)
 			imshow("Destination (RGB)", destinationImage);
 	}
+	// Các task của Lab03
 	else if (strcmp(argv[1], "--mean") == 0)
 	{
 		converter.Convert(image, image, 0);
@@ -188,9 +219,58 @@ int main(int argc, char **argv)
 		if (edgeDetector.DetectEdge(image, destinationImage, 3, 3, 3) == 0)
 			imshow("Laplacian edge detected image", destinationImage);
 	}
-	
+	// Các task của Lab02
+	else if (strcmp(argv[1], "--zoom") == 0)
+	{
+		float sx = stof(other_argv[0]);
+		float sy = stof(other_argv[1]);
+		imshow("Source (Original)", image);
+		geotransform = new GeometricTransformer;
+		if (geotransform->Scale(image, destinationImage, sx, sy, type_interpolation) == 1)
+			imshow("Image after Zooming", destinationImage);
+	}
+	else if (strcmp(argv[1], "--resize") == 0)
+	{
+		int height, width;
+		height = stoi(other_argv[0]);
+		width = stoi(other_argv[1]);
+		imshow("Source (Original)", image);
+		geotransform = new GeometricTransformer;
+		if (geotransform->Resize(image, destinationImage, width, height, type_interpolation) == 1)
+			imshow("Image after Zooming", destinationImage);
+	}
+	else if (strcmp(argv[1], "--rotate") == 0)
+	{
+		float angle = stof(other_argv[0]);
+		imshow("Source (Original)", image);
+		geotransform = new GeometricTransformer;
+		if (geotransform->RotateKeepImage(image, destinationImage, angle, type_interpolation) == 1)
+			imshow("Image after Rotate", destinationImage);
+	}
+	else if (strcmp(argv[1], "--rotateN") == 0)
+	{
+		float angle = stof(other_argv[0]);
+		imshow("Source (Original)", image);
+		geotransform = new GeometricTransformer;
+		if (geotransform->RotateUnkeepImage(image, destinationImage, angle, type_interpolation) == 1)
+			imshow("Image after UnkeepRotate", destinationImage);
+	}
+	else if (strcmp(argv[1], "--flip") == 0)
+	{
+		bool axis = (other_argv[0] == "Ox") ? 1 : 0;
+		imshow("Source (Original)", image);
+		geotransform = new GeometricTransformer;
+		if (geotransform->Flip(image, destinationImage, axis, type_interpolation) == 1)
+			imshow("Image after UnkeepRotate", destinationImage);
+	}
 	waitKey(0);
-	return EXIT_SUCCESS;
+	
+	/*getInfomation(argc, argv, input_path, task, interpolate, other_argv);
+	cout << task << ' ' << input_path << ' ' <<interpolate << ' ';
+	for (auto item : other_argv)
+		cout << item << ' ';*/
+	//return EXIT_SUCCESS;
+
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
@@ -205,3 +285,27 @@ int main(int argc, char **argv)
 //   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
 
 //Y = 0.2126 × R + 0.7152 × G + 0.0722 × B
+
+void getInfomation(int n_ARGUMENT, char **ARGUMENTS, char *&IN_PATH, char *&TASK, char *&INTER_METHOD, vector<string> &OTHER_ARGV)
+{
+	int start_other; // This variable is used for checking the starting index of other_argv
+	TASK = new char[strlen(ARGUMENTS[1])];
+	strcpy(TASK, ARGUMENTS[1]);
+	if (strcmp(ARGUMENTS[2], "--bl") == 0 || strcmp(ARGUMENTS[2], "--nn") == 0)
+	{
+		INTER_METHOD = new char[strlen(ARGUMENTS[2])];
+		strcpy(INTER_METHOD, ARGUMENTS[2]);
+		IN_PATH = new char[strlen(ARGUMENTS[3])];
+		strcpy(IN_PATH, ARGUMENTS[3]);
+		start_other = 4;
+	}
+	else
+	{	
+		INTER_METHOD = NULL;
+		IN_PATH = new char[strlen(ARGUMENTS[2])];
+		strcpy(IN_PATH, ARGUMENTS[2]);
+		start_other = 3;
+	}
+	for (unsigned int index=start_other; index < n_ARGUMENT; index++)
+		OTHER_ARGV.push_back(ARGUMENTS[index]);
+}
