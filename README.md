@@ -105,7 +105,40 @@ Biến đổi màu, biến đổi hình học, làm trơn và phát hiện biên
   ```bash
   MidtermImageProcessing.exe --laplace test.jpg
   ```
-  
+**17. Phóng to, thu nhỏ ảnh:**
+  - task = zoom
+  - taskArgument1 = taskArgument2 = NULL
+  ```bash
+  MidtermImageProcessing.exe --zoom 3 4
+  ```  
+**18. Thay đổi kích thước ảnh:**
+  - task = resize
+  - taskArgument1 = chiều ngang
+  - taskArgument2 = chiều cao
+  ```bash
+  MidtermImageProcessing.exe --resize 1000, 500
+  ```  
+**19. Xoay ảnh quanh tâm(bảo toàn nội dung ảnh):**
+  - task = rotate
+  - taskArgument1 = góc xoay
+  - taskArgument2 = NULL
+  ```bash
+  MidtermImageProcessing.exe --rotate -30
+  ```  
+**20. Xoay ảnh quanh tâm(không bảo toàn nội dung ảnh):**
+  - task = rotateN
+  - taskArgument1 = góc xoay
+  - taskArgument2 = NULL
+  ```bash
+  MidtermImageProcessing.exe --rotateN -60
+  ```  
+**21. Đối xứng trục(Ox hoặc Oy):**
+  - task = flip
+  - taskArgument1 = Ox hoặc Oy 
+  - taskArgument2 = NULL
+  ```bash
+  MidtermImageProcessing.exe --flip Ox
+  ```    
 ## Giấy phép
   - Phần mềm đơn giản phục vụ mục đích học tập
   - Không vì bất kì lý do kinh doanh nào
